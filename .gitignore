@@ -1,8 +1,14 @@
 # Nestjs specific
-/dist
-/node_modules
-/build
-/tmp
+api/dist
+api/node_modules
+api/build
+api/tmp
+
+# NextJS specific
+app/.next
+app/node_modules
+app/out
+app/dist
 
 # Logs
 logs

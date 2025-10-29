@@ -13,16 +13,16 @@ interface ProfilePageProps {
 export default function ProfilePage({ params }: ProfilePageProps) {
   const [nome, setNome] = useState('');
   const [biografia, setBiografia] = useState('');
-  const [plataforma, setPlataforma] = useState('');
-  const [link, setLink] = useState('');
-  const [socialLinks, setSocialLinks] = useState<Array<{id: number, plataforma: string, link: string}>>([]);
+  const [titulo, setTitulo] = useState('');
+  const [url, setUrl] = useState('');
+  const [socialLinks, setSocialLinks] = useState<Array<{id: number, titulo: string, url: string}>>([]);
   const [nextId, setNextId] = useState(1);
 
   const addSocialLink = () => {
-    if (plataforma.trim() && link.trim()) {
-      setSocialLinks([...socialLinks, { id: nextId, plataforma: plataforma.trim(), link: link.trim() }]);
-      setPlataforma('');
-      setLink('');
+    if (titulo.trim() && url.trim()) {
+      setSocialLinks([...socialLinks, { id: nextId, titulo: titulo.trim(), url: url.trim() }]);
+      setTitulo('');
+      setUrl('');
       setNextId(nextId + 1);
     }
   };
@@ -71,24 +71,24 @@ export default function ProfilePage({ params }: ProfilePageProps) {
             <div className="flex gap-2 mb-3">
               <div className="flex-1">
                 <InputText
-                  id="plataforma"
-                  name="plataforma"
-                  label="Plataforma"
-                  value={plataforma}
+                  id="titulo"
+                  name="titulo"
+                  label="Título"
+                  value={titulo}
                   placeholder="Ex: Instagram"
-                  onChange={(e) => setPlataforma(e.target.value)}
+                  onChange={(e) => setTitulo(e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent bg-white dark:bg-zinc-900 text-black dark:text-zinc-50"
                 />
               </div>
               
               <div className="flex-1">
                 <InputText
-                  id="link"
-                  name="link"
-                  label="Link"
-                  value={link}
-                  placeholder="Ex: @usuario ou url"
-                  onChange={(e) => setLink(e.target.value)}
+                  id="url"
+                  name="url"
+                  label="URL"
+                  value={url}
+                  placeholder="Ex: https://instagram.com/usuario"
+                  onChange={(e) => setUrl(e.target.value)}
                   className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent bg-white dark:bg-zinc-900 text-black dark:text-zinc-50"
                 />
               </div>
@@ -114,8 +114,16 @@ export default function ProfilePage({ params }: ProfilePageProps) {
                         key={social.id}
                         className={`${index !== socialLinks.length - 1 ? 'border-b border-zinc-200 dark:border-zinc-700' : ''}`}
                       >
-                        <td className="py-2 px-3 text-zinc-600 dark:text-zinc-400 text-sm">{social.plataforma}</td>
-                        <td className="py-2 px-3 text-zinc-900 dark:text-zinc-50 text-sm">{social.link}</td>
+                        <td className="py-2 px-3">
+                          <a
+                            href={social.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm hover:underline"
+                          >
+                            {social.titulo}
+                          </a>
+                        </td>
                         <td className="py-2 px-3 text-right">
                           <button
                             type="button"

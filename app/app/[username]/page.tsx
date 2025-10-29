@@ -6,9 +6,9 @@ export default function UserPage() {
 
   // Social links memo array
   const socialLinks = useMemo(() => [
-    { plataforma: "Instagram", link: "@joaosilva" },
-    { plataforma: "Twitter", link: "@joao_silva" },
-    { plataforma: "LinkedIn", link: "linkedin.com/in/joaosilva" }
+    { titulo: "Instagram", url: "https://instagram.com/joaosilva" },
+    { titulo: "Twitter", url: "https://twitter.com/joao_silva" },
+    { titulo: "LinkedIn", url: "https://linkedin.com/in/joaosilva" }
   ], []);
 
   return (
@@ -34,11 +34,19 @@ export default function UserPage() {
                 <tbody>
                     {socialLinks.map((social, index) => (
                         <tr 
-                            key={social.plataforma}
+                            key={social.titulo}
                             className={`border-t ${index === socialLinks.length - 1 ? 'border-b' : ''} border-zinc-200 dark:border-zinc-700`}
                         >
-                            <td className="py-3 px-4 text-zinc-600 dark:text-zinc-400">{social.plataforma}</td>
-                            <td className="py-3 px-4 text-zinc-900 dark:text-zinc-50">{social.link}</td>
+                            <td className="py-3 px-4 text-center">
+                              <a
+                                href={social.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 hover:underline"
+                              >
+                                {social.titulo}
+                              </a>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

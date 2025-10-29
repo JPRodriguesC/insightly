@@ -79,19 +79,6 @@ describe('UsuarioController', () => {
     });
   });
 
-  describe('get', () => {
-    it('deve retornar um usuário pelo ID', async () => {
-      const userId = 1;
-      mockUsuarioService.findUsuarioById.mockResolvedValue(mockUsuario);
-
-      const result = await controller.get(userId);
-
-      expect(result).toEqual(mockUsuario);
-      expect(mockUsuarioService.findUsuarioById).toHaveBeenCalledWith(userId);
-      expect(mockUsuarioService.findUsuarioById).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe('getByUsername', () => {
     it('deve retornar um usuário pelo username', async () => {
       const username = 'joaosilva';
@@ -169,16 +156,6 @@ describe('UsuarioController', () => {
 
       await expect(controller.create(createUsuarioDto)).rejects.toThrow(
         'Erro ao criar usuário',
-      );
-    });
-
-    it('deve propagar erro quando service.findUsuarioById falhar', async () => {
-      const userId = 999;
-      const error = new Error('Usuário não encontrado');
-      mockUsuarioService.findUsuarioById.mockRejectedValue(error);
-
-      await expect(controller.get(userId)).rejects.toThrow(
-        'Usuário não encontrado',
       );
     });
 

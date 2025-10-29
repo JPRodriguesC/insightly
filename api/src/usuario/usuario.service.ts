@@ -19,6 +19,12 @@ export class UsuarioService {
   ) {}
 
   async create(createUsuarioDto: CreateUsuarioDto): Promise<UsuarioEntity> {
+    const usuarioExistente = await this.usuarioRepository.findOne({
+      where: { Email: createUsuarioDto.email },
+    });
+
+    if (usuarioExistente) return usuarioExistente;
+
     const usuario = this.usuarioRepository.create({
       Nome: createUsuarioDto.nome,
       Biografia: createUsuarioDto.biografia,
@@ -26,6 +32,7 @@ export class UsuarioService {
       Email: createUsuarioDto.email,
     });
 
+    console.log('Usuario em criacao:', usuario);
     const usuarioSalvo = await this.usuarioRepository.save(usuario);
 
     if (createUsuarioDto.links && createUsuarioDto.links.length > 0) {
@@ -104,6 +111,7 @@ export class UsuarioService {
     const usuario = await this.usuarioRepository.findOne({
       where: { UserName: username },
       relations: ['Links', 'Feedbacks'],
+      order: { Feedbacks: { DataCriacao: 'DESC' } },
     });
 
     if (!usuario) {

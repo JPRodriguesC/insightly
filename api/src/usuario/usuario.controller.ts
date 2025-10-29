@@ -5,7 +5,6 @@ import {
   Put,
   Get,
   Param,
-  ParseIntPipe,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -28,7 +27,7 @@ import type { FeedbackEntity } from './entities/feedback.entity';
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
-  @Post('create')
+  @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Cria um novo usuário' })
   @ApiBody({ type: CreateUsuarioDto })
@@ -53,15 +52,6 @@ export class UsuarioController {
     @Body() updateUsuarioDto: UpdateUsuarioDto,
   ): Promise<UsuarioEntity> {
     return await this.usuarioService.update(username, updateUsuarioDto);
-  }
-
-  @Get(':id')
-  @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Obtém usuário pelo ID' })
-  @ApiParam({ name: 'id', description: 'ID do usuário' })
-  @ApiResponse({ status: 200, description: 'Usuário encontrado' })
-  async get(@Param('id', ParseIntPipe) id: number): Promise<UsuarioEntity> {
-    return await this.usuarioService.findUsuarioById(id);
   }
 
   @Get(':username')

@@ -49,7 +49,7 @@ docker compose up -d
 A arquitetura do Insightly segue os princípios de Clean Architecture com separação clara de responsabilidades:
 
 ### Diagrama Entidade-Relacionamento
-![Modelo de Dados](./docs/c4/DER.png)
+![Modelo de Dados](./docs/db/DER.png)
 
 *Estrutura do banco de dados PostgreSQL com entidades Usuario, Links e Feedback*
 

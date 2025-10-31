@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { TextArea } from '@/components/form/input-text-area';
 
 interface FeedbackFormProps {
   username: string;
@@ -55,9 +56,12 @@ export default function FeedbackForm({ username, onFeedbackAdded }: FeedbackForm
         Dê o seu feedback
       </h3>
       
-      <textarea
+      <TextArea
+        id="feedbackText"
+        name="feedbackText"
+        label=""
         value={feedbackText}
-        onChange={(e) => setFeedbackText(e.target.value)}
+        onChange={(value) => setFeedbackText(value)}
         placeholder="Escreva seu feedback aqui..."
         rows={6}
         className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent resize-none bg-white dark:bg-zinc-800 text-black dark:text-zinc-50 placeholder-zinc-400 dark:placeholder-zinc-500"

@@ -15,9 +15,6 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   const { user } = useUser();
 
   const [salvando, setSalvando] = useState(false);
-  const [salvo, setSalvo] = useState(false);
-  const [erro, setErro] = useState(false);
-  const [mensagemErro, setMensagemErro] = useState('');
 
   const [username, setUsername] = useState<string>('');
   const [nome, setNome] = useState('');
@@ -63,24 +60,13 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         setSocialLinks(links);
         setNextId(links.length + 1);
       } else {
-        console.error('Error fetching user data:', data);
-        setErro(true);
-        setMensagemErro(data.error || 'Erro ao carregar dados do usuário');
+        console.error('Error:', data);
+        alert(data.error || 'Erro ao carregar dados do usuário');
       }
     };
 
     fetchUserData();
   }, [username]);
-
-  useEffect(() => {
-    if (!salvo) return;
-    
-    const timer = setTimeout(() => {
-      setSalvo(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [salvo]);
 
   const addSocialLink = () => {
     if (titulo.trim() && url.trim()) {
@@ -96,33 +82,49 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   };
 
   const handleSubmit = useCallback(async () => {
+    if (!username || !nome.trim()) {
+      alert('Username e nome são obrigatórios.');
+      return;
+    }
+
     const usuario = {
-      nome: nome,
-      biografia: biografia,
+      nome: nome.trim(),
+      biografia: biografia.trim(),
       links: socialLinks.map(link => ({ titulo: link.titulo, url: link.url })),
       email: user?.email,
       userName: user?.nickname
     };
 
     setSalvando(true);
-    setErro(false);
-    const response = await fetch(`/api/users/${username}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(usuario),
-    });
+    
+    try {
+      console.log('Enviando dados:', usuario);
+      
+      const response = await fetch(`/api/users/${username}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(usuario),
+      });
 
-    if (response.ok) {
-      setSalvo(true);
-      setErro(false);
-    } else {
-      setErro(true);
-      const data = await response.json();
-      setMensagemErro(data.error || data.message || 'Erro ao salvar perfil');
+      console.log('Resposta do PUT:', response);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Dados salvos:', data);
+        alert('Perfil salvo com sucesso!');
+      } else {
+        const errorData = await response.json();
+        console.error('Erro na resposta:', errorData);
+        alert(errorData.error || errorData.message || 'Erro ao salvar perfil');
+      }
+    } catch (error) {
+      console.error('Erro na requisição:', error);
+      alert('Erro de conexão. Verifique sua internet e tente novamente.');
+    } finally {
+      setSalvando(false);
     }
-    setSalvando(false);
   }, [nome, biografia, socialLinks, user, username]);
 
   const handleViewProfile = useCallback(() => {
@@ -242,16 +244,6 @@ export default function ProfilePage({ params }: ProfilePageProps) {
               </div>
             )}
           </div>
-          {salvo && (
-            <div className="mt-4 text-green-600 dark:text-green-400">
-              Perfil salvo com sucesso!
-            </div>
-          )}
-          {erro && (
-            <div className="mt-4 text-red-600 dark:text-red-400">
-              {mensagemErro}
-            </div>
-          )}
           <button
             type="button"
             className="w-full bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-black py-2 px-4 rounded-md hover:bg-zinc-700 dark:hover:bg-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 transition-colors"

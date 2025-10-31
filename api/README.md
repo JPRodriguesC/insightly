@@ -1,98 +1,397 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Insightly API - Backend NestJS
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API backend para sistema de gerenciamento de perfis de usuários e feedback, construída com NestJS, TypeORM e PostgreSQL. Fornece endpoints RESTful para operações CRUD de usuários, links sociais e sistema de feedback.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🏗️ Arquitetura
 
-## Description
+Esta API serve como backend para a aplicação Insightly, oferecendo:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Framework**: NestJS 11 com TypeScript
+- **Banco de Dados**: PostgreSQL via TypeORM
+- **Documentação**: Swagger/OpenAPI automática
+- **Testes**: Jest com cobertura completa
+- **Containerização**: Docker multi-stage otimizado
+- **Validação**: DTOs com decorators do class-validator
 
-## Project setup
+## 🛠️ Stack Tecnológico
 
-```bash
-$ npm install
-```
+- **NestJS**: Framework progressivo para Node.js
+- **TypeORM**: ORM para TypeScript e JavaScript
+- **PostgreSQL**: Banco de dados relacional
+- **Swagger**: Documentação automática da API
+- **Jest**: Framework de testes
+- **Docker**: Containerização com Alpine Linux
+- **ESLint/Prettier**: Linting e formatação de código
 
-## Compile and run the project
+## 📋 Pré-requisitos
 
-```bash
-# development
-$ npm run start
+- **Node.js**: versão 20+
+- **npm**: versão 10+
+- **PostgreSQL**: versão 13+ (ou acesso ao Supabase)
+- **Docker**: versão 20.10+ (opcional)
 
-# watch mode
-$ npm run start:dev
+## ⚙️ Configuração do Ambiente
 
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
+### Variáveis de Ambiente (.env)
 
 ```bash
-# unit tests
-$ npm run test
+# Configuração do Banco de Dados
+DATABASE_HOST=seu-host-de-postgres
+DATABASE_PORT=0000
+DATABASE_USER=usuario-postgres
+DATABASE_PASSWORD=password-postgres
+DATABASE_NAME=postgres
+DATABASE_POOL_SIZE=10
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Configuração da Aplicação
+NODE_ENV=development
+PORT=3001
+FRONTEND_URL=http://localhost:3000
 ```
 
-## Deployment
+### Explicação das Variáveis:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+- **DATABASE_***: Configurações de conexão com PostgreSQL
+- **DATABASE_POOL_SIZE**: Número máximo de conexões simultâneas
+- **PORT**: Porta onde a API será executada
+- **FRONTEND_URL**: URL do frontend para configuração de CORS
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 🚀 Instalação e Execução
+
+### Desenvolvimento Local
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Instalar dependências
+npm install
+
+# Executar em modo desenvolvimento
+npm run start:dev
+
+# Executar em modo debug
+npm run start:debug
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Build de Produção
 
-## Resources
+```bash
+# Build da aplicação
+npm run build
 
-Check out a few resources that may come in handy when working with NestJS:
+# Executar versão de produção
+npm run start:prod
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 🐳 Docker
 
-## Support
+### Build da Imagem
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+# Build simples
+docker build -t insightly-api .
 
-## Stay in touch
+# Build com tag específica
+docker build -t insightly-api:latest .
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Execução do Container
 
-## License
+```bash
+# Executar container
+docker run -d \
+  --name insightly-api \
+  --env-file .env \
+  -p 3001:3001 \
+  insightly-api:latest
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# Via Docker Compose (recomendado)
+docker-compose up -d api
+```
+
+### Características do Dockerfile:
+
+- **Multi-stage build**: Otimizado para produção
+- **Alpine Linux**: Imagem base leve (Node.js 20)
+- **Usuário não-root**: Segurança com `nestjs:nodejs` (UID 1001)
+- **Health Check**: Monitoramento automático da saúde da API
+- **Cache otimizado**: Layers separadas para dependências
+
+## 📖 Documentação da API
+
+### Swagger UI
+Acesse `http://localhost:3001/api` para visualizar a documentação interativa.
+
+### Endpoints Principais
+
+#### Usuários
+- `POST /usuario` - Criar novo usuário
+- `GET /usuario/:username` - Buscar usuário por username
+- `GET /usuario/id/:id` - Buscar usuário por ID
+- `PUT /usuario/:username` - Atualizar usuário
+
+#### Feedback
+- `POST /usuario/:username/feedback` - Adicionar feedback
+- `GET /usuario/:username/feedbacks` - Listar feedbacks do usuário
+
+### Exemplos de Requisições
+
+#### Criar Usuário
+```bash
+POST /usuario
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "biografia": "Desenvolvedor apaixonado por tecnologia",
+  "userName": "joaosilva",
+  "email": "joao@example.com",
+  "links": [
+    {
+      "titulo": "LinkedIn",
+      "url": "https://linkedin.com/in/joaosilva"
+    }
+  ]
+}
+```
+
+#### Adicionar Feedback
+```bash
+POST /usuario/joaosilva/feedback
+Content-Type: application/json
+
+{
+  "descricao": "Ótimo perfil profissional!"
+}
+```
+
+## 🗃️ Estrutura do Banco de Dados
+
+### Entidades
+
+#### Usuario
+- `Id`: Chave primária
+- `Nome`: Nome do usuário
+- `Biografia`: Biografia (opcional)
+- `UserName`: Nome de usuário único
+- `Email`: Email do usuário
+- `DataCriacao`: Timestamp de criação
+
+#### Links
+- `Id`: Chave primária
+- `Titulo`: Título do link social
+- `URL`: URL do link
+- `UsuarioId`: Referência ao usuário
+
+#### Feedback
+- `Id`: Chave primária
+- `Descricao`: Texto do feedback
+- `DataCriacao`: Timestamp de criação
+- `UsuarioId`: Referência ao usuário
+
+### Relacionamentos
+- Usuario 1:N Links
+- Usuario 1:N Feedbacks
+
+## 🧪 Testes
+
+### Executar Testes
+
+```bash
+# Testes unitários
+npm run test
+
+# Testes em modo watch
+npm run test:watch
+
+# Testes com debug
+npm run test:debug
+```
+
+### Estrutura de Testes
+
+A aplicação possui cobertura completa de testes:
+
+- **Unit Tests**: Testes isolados dos controllers e services
+- **Mocks**: Objetos simulados para isolamento de testes
+
+### Exemplo de Teste (usuario.controller.spec.ts):
+
+```typescript
+describe('UsuarioController', () => {
+  it('deve criar um novo usuário com sucesso', async () => {
+    const createUsuarioDto: CreateUsuarioDto = {
+      nome: 'João Silva',
+      biografia: 'Desenvolvedor apaixonado por tecnologia',
+      userName: 'joaosilva',
+      email: 'joao@example.com',
+      links: [
+        { titulo: 'LinkedIn', url: 'https://linkedin.com/in/joaosilva' },
+      ],
+    };
+
+    mockUsuarioService.create.mockResolvedValue(mockUsuario);
+
+    const result = await controller.create(createUsuarioDto);
+
+    expect(result).toEqual(mockUsuario);
+    expect(mockUsuarioService.create).toHaveBeenCalledWith(createUsuarioDto);
+    expect(mockUsuarioService.create).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+## 📁 Estrutura do Projeto
+
+```
+api/
+├── Dockerfile              # Container multi-stage otimizado
+├── .env                   # Variáveis de ambiente
+├── package.json           # Dependências e scripts
+├── src/
+│   ├── app.module.ts      # Módulo principal da aplicação
+│   ├── main.ts            # Entry point da aplicação
+│   └── usuario/           # Módulo de usuários
+│       ├── usuario.controller.ts    # Controller REST
+│       ├── usuario.service.ts       # Lógica de negócio
+│       ├── usuario.module.ts        # Configuração do módulo
+│       ├── dto/                     # Data Transfer Objects
+│       │   ├── create-usuario.dto.ts
+│       │   ├── update-usuario.dto.ts
+│       │   └── add-feedback.dto.ts
+│       ├── entities/                # Entidades TypeORM
+│       │   ├── usuario.entity.ts
+│       │   ├── links.entity.ts
+│       │   └── feedback.entity.ts
+│       └── mocks/                   # Dados de teste
+│           ├── usuario.mock.ts
+│           ├── feedback.mock.ts
+│           └── service.mock.ts
+```
+
+## 🔧 Configuração de Desenvolvimento
+
+### Scripts Disponíveis
+
+```bash
+npm run build          # Compilar TypeScript
+npm run format         # Formatar código com Prettier
+npm run start          # Iniciar aplicação
+npm run start:dev      # Modo desenvolvimento com hot-reload
+npm run start:debug    # Modo debug
+npm run start:prod     # Modo produção
+npm run lint           # Executar linting
+npm run test           # Testes unitários
+npm run test:watch     # Testes em modo watch
+```
+
+### Configuração do TypeScript
+
+A aplicação usa configurações otimizadas do TypeScript:
+- `tsconfig.json`: Configuração base
+- `tsconfig.build.json`: Configuração de build
+- **Strict mode**: Ativado para maior segurança de tipos
+- **Decorators**: Suporte completo para decorators do NestJS
+
+## 🚀 Deploy e Produção
+
+### Docker Compose
+
+```yaml
+services:
+  api:
+    build:
+      context: ./api
+    env_file:
+      - ./api/.env
+    ports:
+      - 3001:3001
+```
+
+### Health Check
+
+A aplicação inclui health check automático:
+- **Endpoint**: `/health` (configurar no controller se necessário)
+- **Interval**: 30 segundos
+- **Timeout**: 3 segundos
+- **Retries**: 3 tentativas
+
+### Otimizações de Produção
+
+- **Build otimizado**: Apenas arquivos necessários na imagem final
+- **Node.js production mode**: `NODE_ENV=production`
+- **Security**: Execução com usuário não-root
+- **Performance**: Connection pooling configurado
+- **Monitoring**: Health checks integrados
+
+## 🔒 Segurança
+
+### Configurações de Segurança
+
+- **CORS**: Configurado para frontend específico
+- **Validation Pipes**: Validação automática de entrada
+- **Environment Variables**: Credenciais em variáveis de ambiente
+- **TypeORM**: Proteção contra SQL injection
+- **Rate Limiting**: Pode ser configurado via middleware
+
+### Variáveis Sensíveis
+
+```bash
+# Nunca commitar no repositório
+DATABASE_PASSWORD=*****
+# Usar secrets em produção
+# Configurar via Docker secrets ou K8s secrets
+```
+
+## 📊 Monitoramento
+
+### Logs
+
+```bash
+# Logs do container
+docker logs insightly-api
+
+# Logs em tempo real
+docker logs -f insightly-api
+```
+
+## 🔧 Troubleshooting
+
+### Problemas Comuns
+
+1. **Erro de conexão com banco**:
+   ```bash
+   # Verificar variáveis de ambiente
+   docker exec insightly-api printenv | grep DATABASE
+   ```
+
+2. **Port já em uso**:
+   ```bash
+   # Verificar processo usando a porta
+   lsof -i :3001
+   ```
+
+3. **Build fails**:
+   ```bash
+   # Limpar cache do npm
+   npm cache clean --force
+   rm -rf node_modules package-lock.json
+   npm install
+   ```
+
+### Debug Mode
+
+```bash
+# Executar com debug
+npm run start:debug
+
+# Debug com Docker
+docker run -p 3001:3001 -p 9229:9229 insightly-api npm run start:debug
+```
+
+## 📚 Recursos e Referências
+
+- [NestJS Documentation](https://docs.nestjs.com/)
+- [TypeORM Documentation](https://typeorm.io/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Jest Testing Framework](https://jestjs.io/)
+- [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
+- [Swagger/OpenAPI Specification](https://swagger.io/specification/)

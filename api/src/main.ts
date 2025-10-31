@@ -19,7 +19,10 @@ async function bootstrap() {
     credentials: true,
   });
 
-  await app.listen(parseInt(process.env.PORT || '3001'));
+  await app.listen(
+    parseInt(process.env.PORT || '3001'),
+    process.env.HOST || '0.0.0.0',
+  );
 }
 
 bootstrap().catch((error) => {

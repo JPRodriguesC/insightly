@@ -1,36 +1,200 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Insightly - Aplicação Frontend
 
-## Getting Started
+Aplicação Next.js para gerenciamento de perfis de usuários e sistema de feedback, integrada com Auth0 para autenticação e uma API NestJS backend.
 
-First, run the development server:
+## 🏗️ Arquitetura
+
+Este projeto é o frontend de uma aplicação full-stack que inclui:
+
+- **Frontend**: Next.js 16 com App Router e TypeScript
+- **Autenticação**: Auth0 com middleware personalizado
+- **Backend**: API NestJS (container separado)
+- **Containerização**: Docker com multi-stage builds
+
+## 🛠️ Tecnologias Principais
+
+- **Framework**: Next.js 16 com App Router
+- **Linguagem**: TypeScript
+- **Estilização**: Tailwind CSS
+- **Autenticação**: Auth0 (@auth0/nextjs-auth0)
+- **Containerização**: Docker (Node.js 20 Alpine)
+- **Proxy/Middleware**: Middleware personalizado para Auth0
+
+## 📋 Pré-requisitos para Build
+
+Antes de construir a imagem Docker, certifique-se de ter:
+
+- Docker instalado (versão 20.10+)
+- Docker Compose (opcional, para orquestração)
+- Acesso às variáveis de ambiente necessárias
+
+## ⚙️ Configuração das Variáveis de Ambiente
+
+Crie um arquivo `.env.local` na raiz do projeto com as seguintes variáveis:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Auth0 Configuration
+AUTH0_SECRET='[use: openssl rand -hex 32 para gerar]'
+APP_BASE_URL='http://localhost:80'
+AUTH0_DOMAIN='https://seu-dominio.auth0.com'
+AUTH0_CLIENT_ID='seu_client_id_auth0'
+AUTH0_CLIENT_SECRET='seu_client_secret_auth0'
+
+# API Configuration
+API_BASE_URL='http://api:3001'  # Para comunicação interna entre containers
+NEXT_PUBLIC_API_BASE_URL='http://localhost:3001'  # Para cliente
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Explicação das Variáveis:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **AUTH0_SECRET**: Chave secreta de 32 bytes para criptografia de sessão
+- **AUTH0_DOMAIN**: Domínio do seu tenant Auth0
+- **AUTH0_CLIENT_ID/SECRET**: Credenciais da aplicação Auth0
+- **API_BASE_URL**: URL interna para comunicação com a API NestJS
+- **NEXT_PUBLIC_API_BASE_URL**: URL pública da API para requisições client-side
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🐳 Build da Imagem Docker
 
-## Learn More
+### Build Simples
+```bash
+docker build -t insightly-app .
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Build com Argumentos Customizados
+```bash
+docker build \
+  --build-arg NODE_ENV=production \
+  --tag insightly-app:latest \
+  .
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Executar Container
+```bash
+docker run -d \
+  --name insightly-app \
+  --env-file .env.local \
+  -p 80:80 \
+  insightly-app:latest
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🔧 Middleware e Proxy
 
-## Deploy on Vercel
+A aplicação utiliza um middleware personalizado (`proxy.ts`) que:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Rotas Públicas (sem autenticação):
+- `/[username]` - Perfis públicos de usuários
+- `/[username]/nao-encontrado` - Página de usuário não encontrado
+- `/api/users/*/feedback` - Submissão de feedback (POST)
+- `/api/users/*` - Busca de usuários (GET)
+- Arquivos estáticos (`/_next/*`, `.css`, `.js`, etc.)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Rotas Protegidas (com Auth0):
+- `/profile/*` - Páginas de edição de perfil
+- `/auth/*` - Rotas de autenticação Auth0
+- Outras rotas da aplicação
+
+### Lógica do Middleware:
+1. **Bypass para assets estáticos** - CSS, JS, imagens
+2. **Rotas públicas** - Perfis de usuários e APIs de leitura
+3. **Integração Auth0** - Autenticação automática para rotas protegidas
+4. **Redirecionamento** - Login automático para usuários não autenticados
+
+## 🏃‍♂️ Desenvolvimento Local
+
+### Pré-requisitos
+```bash
+npm install
+```
+
+### Servidor de Desenvolvimento
+```bash
+npm run dev
+```
+
+### Build de Produção
+```bash
+npm run build
+npm start
+```
+
+## 🔗 Integração com Backend
+
+A aplicação se comunica com uma API NestJS que deve estar executando em:
+- **Desenvolvimento**: `http://localhost:3001`
+- **Docker**: `http://api:3001` (nome do service)
+
+### Endpoints Principais:
+- `GET /usuario/:username` - Buscar perfil de usuário
+- `PUT /usuario/:username` - Atualizar perfil
+- `POST /usuario/:username/feedback` - Adicionar feedback
+- `GET /usuario/:username/feedbacks` - Listar feedbacks
+
+## 🚀 Deploy e Produção
+
+### Características do Container de Produção:
+- **Imagem Base**: Node.js 20 Alpine (otimizada)
+- **Multi-stage Build**: Reduz tamanho da imagem final
+- **Usuário não-root**: Executa como `nextjs:nodejs` (UID 1001)
+- **Build Otimizado**: Standalone output para máxima eficiência
+- **Cache de Dependências**: Layers otimizadas para rebuild rápido
+
+### Estrutura do Dockerfile:
+1. **deps**: Instala todas as dependências
+2. **prod-deps**: Apenas dependências de produção
+3. **builder**: Build da aplicação Next.js
+4. **runner**: Imagem final otimizada para produção
+
+### Portas e Exposição:
+- **Porta Interna**: 80
+- **Hostname**: 0.0.0.0 (aceita conexões externas)
+- **Comando**: `node server.js` (standalone mode)
+
+## 🔒 Segurança
+
+### Autenticação:
+- **Auth0**: Gerenciamento completo de usuários
+- **Middleware**: Proteção automática de rotas sensíveis
+- **Session Management**: Cookies seguros e criptografados
+
+### Variáveis Sensíveis:
+- Todas as credenciais em variáveis de ambiente
+- Secrets não commitados no repositório
+- Configuração separada por ambiente
+
+## 📝 Estrutura de Arquivos
+
+```
+app/
+├── Dockerfile              # Configuração Docker multi-stage
+├── proxy.ts               # Middleware Auth0 personalizado
+├── .env.local             # Variáveis de ambiente (não versionar)
+├── app/                   # Código da aplicação Next.js
+│   ├── [username]/        # Rotas públicas de perfil
+│   ├── profile/           # Rotas protegidas de edição
+│   ├── api/              # API routes do Next.js
+│   └── components/       # Componentes reutilizáveis
+├── lib/                   # Configurações Auth0
+└── public/               # Assets estáticos
+```
+
+## 🔧 Troubleshooting
+
+### Problemas Comuns:
+
+1. **Erro 307 Redirect**: Verifique configuração do proxy
+2. **Auth0 Loop**: Confirme CLIENT_ID e SECRET corretos
+3. **API Connection**: Verifique se backend está executando
+4. **Container Fails**: Valide todas as variáveis de ambiente
+
+### Logs úteis:
+```bash
+docker logs insightly-app
+docker logs -f insightly-app  # Follow mode
+```
+
+## 📚 Recursos Adicionais
+
+- [Next.js App Router](https://nextjs.org/docs/app)
+- [Auth0 Next.js SDK](https://auth0.com/docs/quickstart/webapp/nextjs)
+- [Docker Multi-stage Builds](https://docs.docker.com/develop/dev-best-practices/dockerfile_best-practices/)
+- [TypeScript](https://www.typescriptlang.org/docs/)

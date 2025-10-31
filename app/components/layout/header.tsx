@@ -18,6 +18,7 @@ export default function Header() {
             <>
               <Link
                 href="/auth/logout"
+                prefetch={false}
                 className="bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-black px-4 py-2 rounded-md hover:bg-zinc-700 dark:hover:bg-zinc-300 transition-colors text-sm font-medium"
               >
                 Logout
